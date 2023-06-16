@@ -22,4 +22,13 @@ model Session {
   id        String @id @default(auto()) @map("_id") @db.ObjectId
   user1Id   String
   user2Id   String?
+  cell0     String?
+  cell1     String?
+  cell2     String?
+  cell3     String?
+  cell4     String?
+  cell5     String?
+  cell6     String?
+  cell7     String?
+  cell8     String?
 }
