@@ -20,6 +20,7 @@ model User {
 
 model Session {
   id        String @id @default(auto()) @map("_id") @db.ObjectId
+  full      Boolean @default(false)
   user1Id   String
   user2Id   String?
   cell0     String?
