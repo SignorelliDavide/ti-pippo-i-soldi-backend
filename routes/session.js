@@ -2,7 +2,7 @@ const express = require('express');
 const sessionRouter = express.Router();
 const { createNewSession } = require('../utils/session');
 const prisma = require('../utils/db');
-
+const isLoggedIn = require('../utils/passport');
 
 sessionRouter.post('/create', async (req, res) => {
     const { id1 } = req.body;
@@ -10,7 +10,7 @@ sessionRouter.post('/create', async (req, res) => {
     res.json(newSession);
 });
 
-sessionRouter.post('/insert', async (req, res) => {
+sessionRouter.post('/insert', isLoggedIn, async (req, res) => {
     const { player, session, cell } = req.body;
     res.json(await prisma.session.update({
         where: {
@@ -22,7 +22,7 @@ sessionRouter.post('/insert', async (req, res) => {
     }));
 });
 
-sessionRouter.get('/getFree', async (req, res) => {
+sessionRouter.get('/getFree', isLoggedIn, async (req, res) => {
     const freeSession = await prisma.session.findMany({
         where: {
             full: false,
