@@ -9,6 +9,7 @@ sessionRouter.post('/create', async (req, res) => {
     const newSession = await createNewSession(id1);
     res.json(newSession);
 });
+
 sessionRouter.post('/insert', async (req, res) => {
     const { player, session, cell } = req.body;
     res.json(await prisma.session.update({
@@ -19,6 +20,19 @@ sessionRouter.post('/insert', async (req, res) => {
             [cell]: player,
         }
     }));
+});
+
+sessionRouter.get('/getFree', async (req, res) => {
+    const freeSession = await prisma.session.findMany({
+        where: {
+            full: false,
+        },
+        orderBy: {
+            id: 'desc',
+        },
+        take: 1,
+    });
+    res.json(freeSession);
 });
 
 module.exports = sessionRouter;
