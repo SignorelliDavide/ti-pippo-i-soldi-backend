@@ -4,9 +4,9 @@ const { createNewSession } = require('../utils/session');
 const prisma = require('../utils/db');
 const isLoggedIn = require('../utils/passport');
 
-sessionRouter.post('/create', async (req, res) => {
-    const { id1 } = req.body;
-    const newSession = await createNewSession(id1);
+sessionRouter.get('/create', isLoggedIn, async (req, res) => {
+    const { user } = req.session.passport;
+    const newSession = await createNewSession(user);
     res.json(newSession);
 });
 
@@ -22,7 +22,8 @@ sessionRouter.post('/insert', isLoggedIn, async (req, res) => {
     }));
 });
 
-sessionRouter.get('/getFree', isLoggedIn, async (req, res) => {
+sessionRouter.get('/joinSession', isLoggedIn, async (req, res) => {
+    let session;
     const freeSession = await prisma.session.findMany({
         where: {
             full: false,
@@ -32,7 +33,23 @@ sessionRouter.get('/getFree', isLoggedIn, async (req, res) => {
         },
         take: 1,
     });
-    res.json(freeSession);
+    if (freeSession.length == 0) {
+        session = await createNewSession(req.session.passport.user);
+    }
+    else {
+        session = freeSession
+        await prisma.session.update({
+            where: {
+                id: session[0].id,
+            },
+            data: {
+                user2Id: req.session.passport.user,
+                full: true,
+            },
+        });
+    }
+    res.json(session);
 });
+
 
 module.exports = sessionRouter;
