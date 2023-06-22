@@ -4,9 +4,10 @@ const { createNewSession } = require('../utils/session');
 const prisma = require('../utils/db');
 const isLoggedIn = require('../utils/passport');
 
-sessionRouter.post('/create', async (req, res) => {
-    const { id1 } = req.body;
-    const newSession = await createNewSession(id1);
+sessionRouter.post('/create', isLoggedIn, async (req, res) => {
+    console.log('Creating new session');
+    const { user } = req.session.passport;
+    const newSession = await createNewSession(user);
     res.json(newSession);
 });
 
@@ -22,7 +23,7 @@ sessionRouter.post('/insert', isLoggedIn, async (req, res) => {
     }));
 });
 
-sessionRouter.get('/getFree', isLoggedIn, async (req, res) => {
+sessionRouter.get('/getFree', async (req, res) => {
     const freeSession = await prisma.session.findMany({
         where: {
             full: false,
