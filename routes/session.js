@@ -23,6 +23,18 @@ sessionRouter.post('/insert', isLoggedIn, async (req, res) => {
 });
 
 sessionRouter.get('/joinSession', isLoggedIn, async (req, res) => {
+    const user1found = await prisma.session.findMany({
+        where: {
+            user1Id: req.session.passport.user,
+        },
+    });
+    const user2found = await prisma.session.findMany({
+        where: {
+            user2Id: req.session.passport.user,
+        },
+    });
+    if (user1found.length != 0 || user2found.length != 0)
+        return;
     let session;
     const freeSession = await prisma.session.findMany({
         where: {
