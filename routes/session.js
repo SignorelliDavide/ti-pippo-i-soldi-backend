@@ -43,26 +43,69 @@ sessionRouter.get('/sessionVerify', isLoggedIn, async (req, res) => {
 
 sessionRouter.get('/update', isLoggedIn, async (req, res) => {
     //console.log("update");
+    try {
+        const idSess = await findByUser(req.session.passport.user)
+        const session = await prisma.session.findMany({
+            where: {
+                id: idSess[0].id,
+            },
+        });
+        res.json(session);
+    }
+    catch (error) {
+        res.json("error");
+    }
+
+});
+
+sessionRouter.get('/getxIsNext', isLoggedIn, async (req, res) => {
     const idSess = await findByUser(req.session.passport.user)
-    const session = await prisma.session.findMany({
+    res.json(idSess[0].xIsNext);
+});
+sessionRouter.post('/setxIsNext', isLoggedIn, async (req, res) => {
+    const idSess = await findByUser(req.session.passport.user)
+    let x = idSess[0].xIsNext;
+    await prisma.session.update({
         where: {
             id: idSess[0].id,
         },
+        data: {
+            xIsNext: !x,
+        },
     });
-    res.json(session);
+});
+
+sessionRouter.delete('/delete', isLoggedIn, async (req, res) => {
+    try {
+        const idSess = await findByUser(req.session.passport.user)
+        await prisma.session.delete({
+            where: {
+                id: idSess[0].id,
+            },
+        });
+        res.json("ok");
+    }
+    catch (error) {
+        res.json("error");
+    }
 });
 
 sessionRouter.get('/whoIsPlaying', isLoggedIn, async (req, res) => {
-    const idSess = await findByUser(req.session.passport.user)
-    const session = await prisma.session.findMany({
-        where: {
-            id: idSess[0].id,
-        },
-    });
-    if (session[0].user1Id == req.session.passport.user)
-        res.json("X");
-    else
-        res.json("O");
+    try {
+        const idSess = await findByUser(req.session.passport.user)
+        const session = await prisma.session.findMany({
+            where: {
+                id: idSess[0].id,
+            },
+        });
+        if (session[0].user1Id == req.session.passport.user)
+            res.json("X");
+        else
+            res.json("O");
+    }
+    catch (error) {
+        res.json("error");
+    }
 });
 
 sessionRouter.get('/joinSession', isLoggedIn, async (req, res) => {
