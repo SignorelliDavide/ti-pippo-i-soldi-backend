@@ -1,6 +1,6 @@
 const express = require('express');
 const sessionRouter = express.Router();
-const { createNewSession } = require('../utils/session');
+const { createNewSession, findByUser } = require('../utils/session');
 const prisma = require('../utils/db');
 const isLoggedIn = require('../utils/passport');
 
@@ -11,15 +11,44 @@ sessionRouter.get('/create', isLoggedIn, async (req, res) => {
 });
 
 sessionRouter.post('/insert', isLoggedIn, async (req, res) => {
-    const { player, session, cell } = req.body;
-    res.json(await prisma.session.update({
+    const { cell } = req.body;
+    const idSess = await findByUser(req.session.passport.user)
+    let player;
+    let cellValue = "cell" + cell;
+    if (idSess[0].user1Id == req.session.passport.user)
+        player = "X";
+    else
+        player = "O";
+    await prisma.session.update({
         where: {
-            id: session,
+            id: idSess[0].id,
         },
         data: {
-            [cell]: player,
+            [cellValue]: player,
         }
-    }));
+    });
+});
+
+sessionRouter.get('/sessionVerify', isLoggedIn, async (req, res) => {
+    const idSess = await findByUser(req.session.passport.user)
+    try {
+        if (idSess[0].full == true)
+            res.json(true);
+        else
+            res.json(false);
+    } catch (error) {
+        res.json(false);
+    }
+});
+
+sessionRouter.get('/update', isLoggedIn, async (req, res) => {
+    const idSess = await findByUser(req.session.passport.user)
+    const session = await prisma.session.findMany({
+        where: {
+            id: idSess[0].id,
+        },
+    });
+    res.json(session);
 });
 
 sessionRouter.get('/joinSession', isLoggedIn, async (req, res) => {
