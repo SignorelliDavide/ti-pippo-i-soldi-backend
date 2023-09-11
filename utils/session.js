@@ -9,7 +9,7 @@ async function createNewSession(id1) {
                 user1Id: id1,
             },
         });
-        console.log('New session created');
+        //console.log('New session created');
         return newSession;
     } catch (error) {
         console.error('Error during the creation of the session:', error);
@@ -21,7 +21,7 @@ async function findByUser(id) {
             user1Id: id,
         },
     });
-    console.log(found)
+    //console.log(found)
     if (found.length == 0) {
         const found2 = await prisma.session.findMany({
             where: {

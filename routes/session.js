@@ -42,6 +42,7 @@ sessionRouter.get('/sessionVerify', isLoggedIn, async (req, res) => {
 });
 
 sessionRouter.get('/update', isLoggedIn, async (req, res) => {
+    //console.log("update");
     const idSess = await findByUser(req.session.passport.user)
     const session = await prisma.session.findMany({
         where: {
@@ -49,6 +50,19 @@ sessionRouter.get('/update', isLoggedIn, async (req, res) => {
         },
     });
     res.json(session);
+});
+
+sessionRouter.get('/whoIsPlaying', isLoggedIn, async (req, res) => {
+    const idSess = await findByUser(req.session.passport.user)
+    const session = await prisma.session.findMany({
+        where: {
+            id: idSess[0].id,
+        },
+    });
+    if (session[0].user1Id == req.session.passport.user)
+        res.json("X");
+    else
+        res.json("O");
 });
 
 sessionRouter.get('/joinSession', isLoggedIn, async (req, res) => {

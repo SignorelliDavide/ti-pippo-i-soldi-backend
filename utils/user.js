@@ -14,7 +14,7 @@ async function createNewUser(nameInput, emailInput, passwordInput) {
             },
         });
 
-        console.log('New user created:', newUser);
+        //console.log('New user created:', newUser);
         return newUser;
     } catch (error) {
         console.error('Error during the creation of the user:', error);
@@ -33,12 +33,12 @@ async function findByEmail(emailInput) {
 }
 
 async function findById(id) {
-  const found = await prisma.user.findUnique({
-      where: {
-          id,
-      },
-  });
-  return found;
+    const found = await prisma.user.findUnique({
+        where: {
+            id,
+        },
+    });
+    return found;
 }
 
 module.exports = {
