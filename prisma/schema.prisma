@@ -1,5 +1,5 @@
 generator client {
-  provider = "prisma-client-js"
+  provider        = "prisma-client-js"
   previewFeatures = ["multiSchema"]
 }
 
@@ -9,27 +9,28 @@ datasource db {
 }
 
 model User {
-  id        String @id @default(auto()) @map("_id") @db.ObjectId
-  email     String @unique
-  name      String?
-  password  String
-  wins      Int    @default(0)
-  losses    Int    @default(0)
-  tie       Int    @default(0)
+  id       String  @id @default(auto()) @map("_id") @db.ObjectId
+  email    String  @unique
+  name     String?
+  password String
+  wins     Int     @default(0)
+  losses   Int     @default(0)
+  tie      Int     @default(0)
 }
 
 model Session {
-  id        String @id @default(auto()) @map("_id") @db.ObjectId
-  full      Boolean @default(false)
-  user1Id   String
-  user2Id   String?
-  cell0     String?
-  cell1     String?
-  cell2     String?
-  cell3     String?
-  cell4     String?
-  cell5     String?
-  cell6     String?
-  cell7     String?
-  cell8     String?
+  id      String  @id @default(auto()) @map("_id") @db.ObjectId
+  full    Boolean @default(false)
+  user1Id String
+  user2Id String?
+  cell0   String?
+  cell1   String?
+  cell2   String?
+  cell3   String?
+  cell4   String?
+  cell5   String?
+  cell6   String?
+  cell7   String?
+  cell8   String?
+  xIsNext Boolean @default(true)
 }
